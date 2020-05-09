@@ -1,0 +1,110 @@
+#include<iostream>
+#include<cstring>
+using namespace std;
+class intSet
+{
+public:
+	intSet();
+intSet(int a[ ],int size);
+void Empty();     //清空集合*
+bool IsEmpty();   //判断集合是否为空*
+bool IsMemberOf(int a);   //判断某个整数是否在该集合内* 
+bool Add(int a);   //向集合中增加一个元素*
+bool Sub(int a);    //从集合中删除一个元素*
+bool IsEqual(intSet &set);   //判断两个集合是否相等*
+intSet Intersction(intSet &set);   //求两个集合的交集* 
+intSet Merge(intSet &set);    //求两个集合的并集* 
+void Copy(intSet const &set);     //完成集合的复制* 
+void Print();     //*
+private:
+	int element[100];
+	int EndPosition;   //指示集合的最后一个元素位置
+};
+ostream& tab(ostream&);
+ostream& blank(ostream&);
+
+int main(int argc, char** argv) {
+	int a[5]={1,2,3,4,5},b[4]={1,2,3,4};
+	intSet s1(a,5),s2(b,4),s3;
+	s1.Print();//Print正确 
+	cout<<s1.IsEmpty()<<tab<<s3.IsEmpty()<<endl;//IsEmpty正确 
+	cout<<s1.IsMemberOf(5)<<tab<<s2.IsMemberOf(5)<<endl;//IsMemberOf正确 
+	s2.Add(5);s2.Print();//Add正确	
+	cout<<s2.IsEqual(s1)<<endl;//IsEqual正确 
+	s1.Sub(1);s1.Print();//Sub正确 
+	s1.Empty();s1.Print();//Empty正确 
+	s1.Copy(s2);s1.Print();//Copy正确 
+	s1.Add(998);s1.Print();
+	s3.Copy(s1.Merge(s2));s3.Print();//Merge正确 
+	s3.Copy(s1.Intersction(s2));s3.Print();//Intersction正确 
+	return 0;
+}
+intSet::intSet():EndPosition(-1){}
+
+intSet::intSet(int a[ ],int size):EndPosition(0){
+	for(;EndPosition<size;++EndPosition)
+	element[EndPosition]=a[EndPosition];
+	EndPosition--;
+}
+void intSet::Empty(){
+	EndPosition=-1;
+}
+bool intSet::IsEmpty(){
+	if(EndPosition==-1)return 1;
+	return 0;
+}
+bool intSet::IsMemberOf(int a){
+	for(int i=0;i<=EndPosition;++i)
+	if(element[i]==a)return 1;
+	return 0;
+}
+bool intSet::Add(int a){
+	if(EndPosition<99&&!IsMemberOf(a)){element[++EndPosition]=a;return 1;}
+	return 0;
+}
+bool intSet::Sub(int a){
+	int i=0;
+	while(element[i++]!=a&&i<=EndPosition+1);
+	for(int j=i;j<=EndPosition;++j)
+	element[j-1]=element[j];
+	EndPosition--;
+	if(i<101)return 1;
+	return 0;
+}
+bool intSet::IsEqual(intSet &set){
+	for(int i=0;i<=EndPosition;++i)
+	if(!set.IsMemberOf(element[i]))return 0;
+	return 1;
+}
+void intSet::Copy(intSet const &set){
+	for(int i=0;i<=set.EndPosition;++i)
+	element[i]=set.element[i];
+	EndPosition=set.EndPosition;
+}
+intSet intSet::Intersction(intSet &set){
+	intSet s;
+	for(int i=0;i<=EndPosition;++i)
+	if(set.IsMemberOf(element[i]))
+		s.Add(element[i]);
+	return s;
+}
+intSet intSet::Merge(intSet &set){
+	intSet s;
+	s.Copy(set);
+	for(int i=0;i<=EndPosition;++i)
+	if(!set.IsMemberOf(element[i]))
+	s.Add(element[i]);
+	return s;
+}
+void intSet::Print(){
+	for(int i=0;i<=EndPosition;++i)
+	//cout.width(2),
+	cout<<element[i]<<blank;
+	cout<<endl;
+}
+ostream& tab(ostream& out){
+	return out<<"\t";
+}
+ostream& blank(ostream& out){
+	return cout<<" ";
+}

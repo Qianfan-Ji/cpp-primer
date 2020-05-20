@@ -1,0 +1,68 @@
+#include<iostream>
+#include<string>
+#define show p->display();
+#define bk blank
+using namespace std;
+ostream & blank(ostream& c){
+	return c<<" ";}
+class person{
+	int no;
+	string name;
+	public:
+		void input(int n1,string n2){no=n1,name=n2;}
+		virtual void display(){cout<<no<<bk<<name<<bk;}
+	person(int n1,string n2):no(n1),name(n2){}
+	person(){}
+};
+class student:virtual public person{
+	int Class;
+	int score;
+	public:
+		void input(int n1,string n2,int c,int s)
+			{person::input(n1,n2),score=c,score=s;}
+		void display(){person::display();cout<<*this;}
+	student(int n1,string n2,int c,int s)
+		:person(n1,n2),Class(c),score(s){}
+	friend ostream & operator<<(ostream & os,student & s);
+	friend class TeachAssistant;
+};
+ostream & operator<<(ostream & os,student & s){
+	return os<<s.Class<<bk<<s.score<<endl;
+}
+class teacher:virtual public person{
+	string post;
+	string department;
+	public:
+		void input(int n1,string n2,string p,string d)
+			{person::input(n1,n2),post=p,department=d;}
+		void display(){person::display();cout<<*this;}
+	teacher(int n1,string n2,string p,string d)
+		:person(n1,n2),post(p),department(d){}
+	friend ostream & operator<<(ostream & os,teacher & t);
+	friend class TeachAssistant;
+};
+ostream & operator<<(ostream & os,teacher & t){
+	return os<<t.post<<bk<<t.department<<endl;	
+}
+//**********************(2)************************
+class TeachAssistant:public student,public teacher{
+	int wage;
+	public:
+		void input(int n1,string n2,int c,int s,string p,string d,int w)
+		{student::input(n1,n2,c,s);teacher::input(n1,n2,p,d);wage=w;}
+		void display(){person::display();
+		cout<<Class<<bk<<score<<bk<<post<<bk<<department<<endl;}
+	TeachAssistant(int n1,string n2,int c,int s,string p,string d,int w)
+	:person(n1,n2),student(n1,n2,c,s),teacher(n1,n2,p,d),wage(w){}
+};
+//**********************(2)************************
+int main(){
+	person* p=new person;
+	student s1(83290442,"大哥",13,100);p=&s1;show
+	s1.input(10086009,"张三",13,80);show
+	teacher t1(238881,"王老师","讲师","数统院");p=&t1;show 
+	t1.input(242422,"李老师","教授","计软院");show
+	TeachAssistant ta(83290442,"大哥",13,100,"助教","计软院",998);p=&ta;show//(2)
+	ta.input(10086009,"张三",13,80,"助教","计软院",100);show //(2)
+	return 0;
+} 
